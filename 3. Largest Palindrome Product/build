@@ -1,5 +1,8 @@
 #/bin/bash
+curDir=$(pwd -L)
 clear && clear
 clear && clear
-gcc Main.c -o Main
+gcc Main.c -o Main -std=c99
+echo Build Finished
+echo Launching Application
 ./Main
