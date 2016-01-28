@@ -3,22 +3,22 @@
 #define TRUE !FALSE
 #define bool int
 #define MULTIPLE_TO_FIND 1000
-int findMultiples_efficient(int, int);
+int findMultipleSum_efficient(int, int);
 int findMultipleDupes_efficient(int, int, int, int);
 
 int main(int argc, char*argv)
 {
 	printf("Searching for sum of multiples of 3 and 5 below %d\n", MULTIPLE_TO_FIND);
 
-	int sum3 = findMultiples_efficient(3, MULTIPLE_TO_FIND);
-	int sum5 = findMultipleDupes_efficient(3, 5, MULTIPLE_TO_FIND, findMultiples_efficient(5, MULTIPLE_TO_FIND));
+	int sum3 = findMultipleSum_efficient(3, MULTIPLE_TO_FIND);
+	int sum5 = findMultipleDupes_efficient(3, 5, MULTIPLE_TO_FIND, findMultipleSum_efficient(5, MULTIPLE_TO_FIND));
 	int totalSum = sum3 + sum5;
 
 	printf("Sum of 3 = %d\nSum of 5 = %d\nSum of both = %d\n", sum3, sum5, totalSum);
 	return 1;
 }
 
-int findMultiples_efficient(int rootMultiple, int maxValue)
+int findMultipleSum_efficient(int rootMultiple, int maxValue)
 {
 	//changes 1000/5 to 999/5 or 30/3 to 29/3 to keep the multiple BELOW the maxValue passed in
 	int largestIndex;
@@ -52,7 +52,7 @@ int findMultipleDupes_efficient(int rootMultipleA, int rootMultipleB, int maxVal
 {
 	//This value is duplicated totalSumOfMultipleB / (rootMultipleA * rootMultipleB) times
 	int dupedValue = rootMultipleA * rootMultipleB;
-	int dupedSum = findMultiples_efficient(dupedValue, maxValue);
+	int dupedSum = findMultipleSum_efficient(dupedValue, maxValue);
 	printf("Duplicated Multiple to find = %d : Duplicated Total Sum = %d\n", dupedValue, dupedSum);
 	return totalSumOfMultipleB - dupedSum;
 }
