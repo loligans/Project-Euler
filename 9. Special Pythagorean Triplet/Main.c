@@ -30,13 +30,20 @@ long findPythagTriplets()
 	//a = r + s
 	//b = r + t
 	//c = r + s + t
-	unsigned long r = 6;//r
+	unsigned long r;//r
 	unsigned long* sFactors; //s
 	unsigned long* tFactors; //t
-	unsigned long totalFactors = factorValue(r*r / 2, &sFactors, &tFactors);
-	unsigned long a = sFactors[0];
-	unsigned long b = tFactors[0];
-	printf("a=%lu : b=%lu\n", a, b);
+	unsigned long totalFactors;
+	unsigned long a;
+	unsigned long b;
+	unsigned long c;
+	unsigned long i = 0;
+	r = 2;
+	totalFactors = factorValue( r * r / 2, &sFactors, &tFactors);
+	a = r + sFactors[0];
+	b = r + tFactors[0];
+	c = r + sFactors[0] + tFactors[0];
+	printf("a=%lu : b=%lu : c=%lu\n", a, b, c);
 
 	return -1;
 }
