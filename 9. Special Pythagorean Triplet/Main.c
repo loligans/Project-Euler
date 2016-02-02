@@ -10,7 +10,7 @@
 bool testIfPythagTriplet(unsigned long m, unsigned long n);
 long findPythagTriplet();
 void discoverPythagTriplets();
-long factorValues(long, long*, long*);
+long factorValue(long, long**, long**);
 
 int main(int argc, char*argv[])
 {
@@ -22,20 +22,24 @@ int main(int argc, char*argv[])
 	printf("Locating Pythagorean Triplets\n");
 	findPythagTriplet();
 
-	// start = clock();
-	// long factorsFound = factorValues(1000, sFactors, tFactors);
-	// end = clock();
-	// exe_time1 = (double)(end - start) / CLOCKS_PER_SEC;
-	// printf("Total factoring time is %f and we found %ld factors\n", exe_time1, factorsFound);
-
-
-
 	return 1;
 }
 
+long findPythagTriplet()
+{
+	long* sFactors;
+	long* tFactors;
+	unsigned long r = 6;//c
+	unsigned long totalFactors = factorValue(r*r / 2, &sFactors, &tFactors);
+	unsigned long a = sFactors[0];
+	unsigned long b = tFactors[0];
+	printf("a=%lu : b=%lu\n", a, b);
+
+	return -1;
+}
 
 
-long factorValues(long valueToFactor, long* sFactors, long* tFactors)
+long factorValue(long valueToFactor, long** sFactors, long** tFactors)
 {
 	//Store all factors in this temp array
 	long* sTemp = malloc(sizeof(long) * (long)sqrt(valueToFactor));
@@ -52,16 +56,19 @@ long factorValues(long valueToFactor, long* sFactors, long* tFactors)
 		}
 		nextValue++;
 	}
-	sFactors = malloc(sizeof(long) * (factorsFound + 1));
-	tFactors = malloc(sizeof(long) * (factorsFound + 1));
+	printf("Found %ld Allocating %ld-longs\n", factorsFound, factorsFound + 1);
+	long* sTrimmedFactors = malloc(sizeof(long) * (factorsFound + 1));
+	long* tTrimmedFactors = malloc(sizeof(long) * (factorsFound + 1));
 	for(long a = 0; a < factorsFound; ++a)
 	{
-		sFactors[a] = sTemp[a];
-		tFactors[a] = tTemp[a];
-		printf("s=%lu : t=%lu\n", sFactors[a], tFactors[a]);
+		sTrimmedFactors[a] = sTemp[a];
+		tTrimmedFactors[a] = tTemp[a];
+		printf("s=%lu : t=%lu\n", sTrimmedFactors[a], tTrimmedFactors[a]);
 	}
-	// free(sTemp);
-	// free(tTemp);
+	*sFactors = sTrimmedFactors;
+	*tFactors = tTrimmedFactors;
+	free(sTemp);
+	free(tTemp);
 	return factorsFound;
 }
 
@@ -84,26 +91,4 @@ bool testIfPythagTriplet(unsigned long m, unsigned long n)
 	bool isCoprime = ((m > n) ? m : n) == COPRIME;
 	//Test if m - n is odd
 	return isOdd && isCoprime;
-}
-
-long findPythagTriplet()
-{
-	unsigned long* sFactors; //a
-	unsigned long* tFactors; //b
-	unsigned long r = 6;//c
-	unsigned long totalFactors = factorValues((r*r) / 2, sFactors, tFactors);
-	unsigned long a = sFactors[0];
-	unsigned long b = tFactors[0];
-	printf("a=%lu : b=%lu\n", a, b);
-	// unsigned long a = r + (sFactors[0]);
-	// unsigned long b = r + (tFactors[0]);
-	//unsigned long c = r + (sFactors[0]);
-
-	//printf("Triplet is %lu, %lu, %lu\n", a, b, c);
-	// unsigned long a = (m * m) - (n * n);
-	// unsigned long b = 2 * (m * n);
-	// unsigned long c = (m * m) + (n * n);
-	// unsigned long sum = a+b+c;
-	// printf("a=%lu : b=%lu : c=%lu : Sum=%lu\n", a, b, c, sum);
-	return -1;
 }
