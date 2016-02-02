@@ -8,9 +8,9 @@
 #define COPRIME 1
 
 bool testIfPythagTriplet(unsigned long m, unsigned long n);
-long findPythagTriplet();
+long findPythagTriplets();
 void discoverPythagTriplets();
-long factorValue(long, long**, long**);
+long factorValue(unsigned long, unsigned long**, unsigned long**);
 
 int main(int argc, char*argv[])
 {
@@ -20,16 +20,19 @@ int main(int argc, char*argv[])
 	
 
 	printf("Locating Pythagorean Triplets\n");
-	findPythagTriplet();
+	findPythagTriplets();
 
 	return 1;
 }
 
-long findPythagTriplet()
+long findPythagTriplets()
 {
-	long* sFactors;
-	long* tFactors;
-	unsigned long r = 6;//c
+	//a = r + s
+	//b = r + t
+	//c = r + s + t
+	unsigned long r = 6;//r
+	unsigned long* sFactors; //s
+	unsigned long* tFactors; //t
 	unsigned long totalFactors = factorValue(r*r / 2, &sFactors, &tFactors);
 	unsigned long a = sFactors[0];
 	unsigned long b = tFactors[0];
@@ -39,13 +42,13 @@ long findPythagTriplet()
 }
 
 
-long factorValue(long valueToFactor, long** sFactors, long** tFactors)
+long factorValue(unsigned long valueToFactor, unsigned long** sFactors, unsigned long** tFactors)
 {
 	//Store all factors in this temp array
-	long* sTemp = malloc(sizeof(long) * (long)sqrt(valueToFactor));
-	long* tTemp = malloc(sizeof(long) * (long)sqrt(valueToFactor));
-	long nextValue = 1;
-	long factorsFound = 0;
+	unsigned long* sTemp = malloc(sizeof(long) * (unsigned long)sqrt(valueToFactor));
+	unsigned long* tTemp = malloc(sizeof(long) * (unsigned long)sqrt(valueToFactor));
+	unsigned long nextValue = 1;
+	unsigned long factorsFound = 0;
 	while(nextValue < (long)sqrt(valueToFactor)+1)
 	{
 		if(valueToFactor % nextValue == 0)
@@ -56,9 +59,9 @@ long factorValue(long valueToFactor, long** sFactors, long** tFactors)
 		}
 		nextValue++;
 	}
-	printf("Found %ld Allocating %ld-longs\n", factorsFound, factorsFound + 1);
-	long* sTrimmedFactors = malloc(sizeof(long) * (factorsFound + 1));
-	long* tTrimmedFactors = malloc(sizeof(long) * (factorsFound + 1));
+	printf("Found %ld-Factors Allocating %ld-longs\n", factorsFound, factorsFound + 1);
+	unsigned long* sTrimmedFactors = malloc(sizeof(long) * (factorsFound + 1));//We add 1 because factors found is offset by 1
+	unsigned long* tTrimmedFactors = malloc(sizeof(long) * (factorsFound + 1));//We add 1 because factors found is offset by 1
 	for(long a = 0; a < factorsFound; ++a)
 	{
 		sTrimmedFactors[a] = sTemp[a];
