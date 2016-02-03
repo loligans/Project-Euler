@@ -1,0 +1,7 @@
+#!/bin/bash
+clear && clear
+clear && clear
+echo "Buidling Largest Product in a Grid"
+gcc -o Main Main.c
+echo "Launching Largest Product in a Grid"
+./Main
