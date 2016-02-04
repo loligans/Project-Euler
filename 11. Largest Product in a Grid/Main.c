@@ -1,9 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #define GRID_SIZE 20
 
 void printGrid();
 long findLargestProductInGrid(int);
-long productOfSection(int);
+long largestProductRight(int, int, int);
+long largestProductDiagonalRight(int, int, int);
+long largestProductDown(int, int, int);
+long largestProductDiagonalLeft(int, int, int);
+
 int grid[20][20] = {
 	{ 8, 2,22,97,38,15, 0,40, 0,75, 4, 5, 7,78,52,12,50,77,91, 8},
     {49,49,99,40,17,81,18,57,60,87,17,40,98,43,69,48, 4,56,62, 0},
@@ -32,51 +38,111 @@ int grid[20][20] = {
 };
 int main(int argc, char*argv[])
 {
+	//Benchmarking stuff
+	clock_t begin, end;
+	double compute_time;
 	printf("Locating the largest product in the below grid\n\n");
 	printGrid();
+	begin = clock();
+	//Begin locating the largest product
 	findLargestProductInGrid(4);
+	end = clock();
+	compute_time = (double)(end - begin) / CLOCKS_PER_SEC;
+	printf("Time it took for completetion: %f Seconds\n", compute_time);
 	return 1;
 }
 long findLargestProductInGrid(int sectionSize)
 {
 	long largestProduct = 1;
 	long currentProduct = 1;
-	int a,b,c,d;
+	//The array starts at 0 so we adust the beginning of a section to be 0 - 3 instead of 1 - 4
+	int sectionOffset = sectionSize - 1;
 	for(int ROW = 0; ROW < GRID_SIZE; ++ROW)
 	{
-		for(int COL = 0; COL < GRID_SIZE - sectionSize; ++COL)
+		for(int COL = 0; COL < GRID_SIZE; ++COL)
 		{
-			a = grid[ROW][COL];
-			b = grid[ROW][COL + 1];
-			c = grid[ROW][COL + 2];
-			d = grid[ROW][COL + 3];
-			currentProduct = a * b * c * d;
-			largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
-			printf("%d * %d * %d * %d = %ld\n", a, b, c, d, currentProduct);
-			a = grid[ROW][COL];
-			b = grid[ROW + 1][COL + 1];
-			c = grid[ROW + 2][COL + 2];
-			d = grid[ROW + 3][COL + 3];
-			currentProduct = a * b * c * d;
-			largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
-			printf("%d * %d * %d * %d = %ld\n", a, b, c, d, currentProduct);
-			a = grid[ROW][COL];
-			b = grid[ROW + 1][COL];
-			c = grid[ROW + 2][COL];
-			d = grid[ROW + 3][COL];
-			currentProduct = a * b * c * d;
-			largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
-			printf("%d * %d * %d * %d = %ld\n", a, b, c, d, currentProduct);
+			//Col < 3 && Row <= 16
+			if(COL < sectionOffset && ROW <= GRID_SIZE - sectionSize)
+			{
+				//Right, Diagonal Right, Down 
+				currentProduct = largestProductRight(sectionSize, ROW, COL);
+				largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
+				currentProduct = largestProductDiagonalRight(sectionSize, ROW, COL);
+				largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
+				currentProduct = largestProductDown(sectionSize, ROW, COL);
+				largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
+			}
+			///Col >= 3 && Col <= 16
+			else if(COL >= sectionOffset && COL <= GRID_SIZE - sectionSize && ROW <= GRID_SIZE - sectionSize)
+			{
+				//Right, Diagonal Right, Down, Diagonal Left
+				currentProduct = largestProductRight(sectionSize, ROW, COL);
+				largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
+				currentProduct = largestProductDiagonalRight(sectionSize, ROW, COL);
+				largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
+				currentProduct = largestProductDown(sectionSize, ROW, COL);
+				largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
+				currentProduct = largestProductDiagonalLeft(sectionSize, ROW, COL);
+				largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
+			}
+			//Col > 16 && Row <= 16
+			else if(COL > GRID_SIZE - sectionSize && ROW <= GRID_SIZE - sectionSize)
+			{
+				//Down, Diagonal Left
+				currentProduct = largestProductDown(sectionSize, ROW, COL);
+				largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
+				currentProduct = largestProductDiagonalLeft(sectionSize, ROW, COL);
+				largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
+			}
+			//Row > 16
+			else if(ROW > GRID_SIZE - sectionSize && COL <= GRID_SIZE - sectionSize)
+			{
+				//Right
+				currentProduct = largestProductRight(sectionSize, ROW, COL);
+				largestProduct = currentProduct > largestProduct ? currentProduct : largestProduct;
+			}
 		}
 	}
 	printf("Largest Product Found %ld\n", largestProduct);
-	return 0;
+	return largestProduct;
 }
-long productOfSection(int sectionSize)
+long largestProductRight(int sectionSize, int ROW, int COL)
 {
-
-	return 0;
+	long total = 1;
+	for(int a = 0; a < sectionSize; ++a)
+	{
+		total *= grid[ROW][COL + a];
+	}
+	return total;
 }
+long largestProductDiagonalRight(int sectionSize, int ROW, int COL)
+{
+	long total = 1;
+	for(int a = 0; a < sectionSize; ++a)
+	{
+		total *= grid[ROW + a][COL + a];
+	}
+	return total;
+}
+long largestProductDown(int sectionSize, int ROW, int COL)
+{
+	long total = 1;
+	for(int a = 0; a < sectionSize; ++a)
+	{
+		total *= grid[ROW + a][COL];
+	}
+	return total;
+}
+long largestProductDiagonalLeft(int sectionSize, int ROW, int COL)
+{
+	long total = 1;
+	for(int a = 0; a < sectionSize; ++a)
+	{
+		total *= grid[ROW + a][COL - a];
+	}
+	return total;
+}
+
 void printGrid()
 {
 	for(int a = 0; a < GRID_SIZE; ++a)
