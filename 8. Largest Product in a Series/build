@@ -1,7 +1,0 @@
-#/bin/bash
-clear && clear
-clear && clear
-gcc Main.c -o Main
-echo "Build Finished"
-echo "Launching Application"
-./Main
